@@ -1,7 +1,6 @@
 package com.habitat.habitat.organization;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,8 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -42,8 +40,10 @@ public class Organization {
 	@Column(nullable = false, length = 40)
 	private String packageCode;
 
-	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> enabledFeatures = new HashSet<>();
+	@Column(length = 40)
+	private String pendingPackageCode;
+
+	private LocalDate pendingPackageEffectiveDate;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 30)
@@ -55,13 +55,12 @@ public class Organization {
 	protected Organization() {
 	}
 
-	public Organization(String name, OrganizationType type, Country country, String packageCode, Set<String> enabledFeatures) {
+	public Organization(String name, OrganizationType type, Country country, String packageCode) {
 		this.name = name;
 		this.type = type;
 		this.country = country;
 		this.baseCurrency = country.getCurrency();
 		this.packageCode = packageCode.toUpperCase();
-		this.enabledFeatures = new HashSet<>(enabledFeatures);
 	}
 
 	public UUID getId() {
@@ -88,8 +87,12 @@ public class Organization {
 		return packageCode;
 	}
 
-	public Set<String> getEnabledFeatures() {
-		return Set.copyOf(enabledFeatures);
+	public String getPendingPackageCode() {
+		return pendingPackageCode;
+	}
+
+	public LocalDate getPendingPackageEffectiveDate() {
+		return pendingPackageEffectiveDate;
 	}
 
 	public OrganizationStatus getStatus() {
@@ -98,5 +101,19 @@ public class Organization {
 
 	public void activate() {
 		status = OrganizationStatus.LIVE;
+	}
+
+	public void changePackage(String packageCode) {
+		this.packageCode = packageCode.toUpperCase();
+	}
+
+	public void schedulePackageDowngrade(String packageCode, LocalDate effectiveDate) {
+		this.pendingPackageCode = packageCode.toUpperCase();
+		this.pendingPackageEffectiveDate = effectiveDate;
+	}
+
+	public void clearPendingPackageChange() {
+		this.pendingPackageCode = null;
+		this.pendingPackageEffectiveDate = null;
 	}
 }

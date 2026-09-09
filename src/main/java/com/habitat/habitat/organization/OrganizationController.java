@@ -2,6 +2,7 @@ package com.habitat.habitat.organization;
 
 import com.habitat.habitat.identity.RoleName;
 import com.habitat.habitat.identity.TenantContext;
+import com.habitat.habitat.subscription.SubscriptionService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,15 @@ public class OrganizationController {
 
 	private final OrganizationOnboardingService onboardingService;
 	private final TenantContext tenantContext;
+	private final SubscriptionService subscriptionService;
 
-	public OrganizationController(OrganizationOnboardingService onboardingService, TenantContext tenantContext) {
+	public OrganizationController(
+			OrganizationOnboardingService onboardingService,
+			TenantContext tenantContext,
+			SubscriptionService subscriptionService) {
 		this.onboardingService = onboardingService;
 		this.tenantContext = tenantContext;
+		this.subscriptionService = subscriptionService;
 	}
 
 	@PostMapping
@@ -34,6 +40,7 @@ public class OrganizationController {
 	@Transactional(readOnly = true)
 	public OrganizationResponse currentOrganization() {
 		tenantContext.requireRole(RoleName.ORG_ADMIN);
-		return OrganizationResponse.from(tenantContext.currentOrganization());
+		Organization organization = tenantContext.currentOrganization();
+		return OrganizationResponse.from(organization, subscriptionService.enabledFeatureCodes(organization));
 	}
 }

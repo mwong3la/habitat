@@ -7,8 +7,7 @@ import com.habitat.habitat.identity.Role;
 import com.habitat.habitat.identity.RoleName;
 import com.habitat.habitat.identity.RoleRepository;
 import com.habitat.habitat.common.domain.BusinessRuleViolationException;
-import com.habitat.habitat.subscription.EntitlementCatalog;
-import java.util.Set;
+import com.habitat.habitat.subscription.SubscriptionService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class OrganizationOnboardingService {
 	private final AppUserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final EntitlementCatalog entitlementCatalog;
+	private final SubscriptionService subscriptionService;
 	private final ApplicationEventPublisher events;
 
 	public OrganizationOnboardingService(
@@ -31,14 +30,14 @@ public class OrganizationOnboardingService {
 			AppUserRepository userRepository,
 			RoleRepository roleRepository,
 			PasswordEncoder passwordEncoder,
-			EntitlementCatalog entitlementCatalog,
+			SubscriptionService subscriptionService,
 			ApplicationEventPublisher events) {
 		this.organizationRepository = organizationRepository;
 		this.countryRepository = countryRepository;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.entitlementCatalog = entitlementCatalog;
+		this.subscriptionService = subscriptionService;
 		this.events = events;
 	}
 
@@ -51,13 +50,12 @@ public class OrganizationOnboardingService {
 		Country country = countryRepository.findByCode(request.countryCode().toUpperCase())
 				.orElseThrow(() -> new ResourceNotFoundException("Country is not supported: " + request.countryCode()));
 
-		Set<String> enabledFeatures = entitlementCatalog.defaultFeaturesFor(request.packageCode());
 		Organization organization = organizationRepository.save(new Organization(
 				request.name(),
 				request.organizationType(),
 				country,
-				request.packageCode(),
-				enabledFeatures));
+				request.packageCode()));
+		subscriptionService.grantPlanFeatures(organization, request.packageCode());
 
 		Role adminRole = roleRepository.findByName(RoleName.ORG_ADMIN)
 				.orElseThrow(() -> new ResourceNotFoundException("Organization admin role is not configured"));
@@ -74,6 +72,6 @@ public class OrganizationOnboardingService {
 		events.publishEvent(new OrganizationCreatedEvent(organization.getId()));
 		events.publishEvent(new OrganizationActivatedEvent(organization.getId()));
 
-		return OrganizationResponse.from(organization);
+		return OrganizationResponse.from(organization, subscriptionService.enabledFeatureCodes(organization));
 	}
 }

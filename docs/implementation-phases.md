@@ -1,6 +1,6 @@
 # Habitat Implementation Phases
 
-This document tracks the implementation order for the Habitat backend. Each phase ends with a compile check, test run, and a usable system state.
+This document tracks the implementation order for the Habitat backend. Each implemented phase records its verification status.
 
 ## Phase 1: Foundation
 
@@ -22,9 +22,11 @@ Notes:
 
 - Organization is the tenant boundary.
 - Backend services resolve tenant context from the authenticated user.
-- Package features are temporarily catalog-backed until Phase 2.
+- Package features are stored as plan and organization feature records.
 
 ## Phase 2: Plans and Entitlements
+
+Status: implemented.
 
 Scope:
 
@@ -45,6 +47,8 @@ Business rules:
 
 ## Phase 3: Properties, Units, and Owners
 
+Status: implemented.
+
 Scope:
 
 - Property
@@ -60,6 +64,8 @@ Business rules:
 - Users cannot access property data outside their organization.
 
 ## Phase 4: Listings, Inquiries, Viewings, and Leasing
+
+Status: not started.
 
 Scope:
 
@@ -81,6 +87,8 @@ Business rules:
 
 ## Phase 5: Billing and Invoices
 
+Status: not started.
+
 Scope:
 
 - Billing schedule
@@ -95,6 +103,8 @@ Business rules:
 - Invoice generation must be repeat-safe for scheduled execution.
 
 ## Phase 6: Payments and Webhooks
+
+Status: not started.
 
 Scope:
 
@@ -114,6 +124,8 @@ Business rules:
 
 ## Phase 7: Ledger and Multi-Currency
 
+Status: not started.
+
 Scope:
 
 - Ledger account
@@ -132,6 +144,8 @@ Business rules:
 
 ## Phase 8: Maintenance and Vendors
 
+Status: not started.
+
 Scope:
 
 - Maintenance request
@@ -149,6 +163,8 @@ Business rules:
 
 ## Phase 9: Owner Reporting
 
+Status: not started.
+
 Scope:
 
 - Reporting period
@@ -165,6 +181,8 @@ Business rules:
 - Owner portal access follows package entitlements.
 
 ## Phase 10: Notifications, Integrations, and Hardening
+
+Status: not started.
 
 Scope:
 

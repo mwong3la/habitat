@@ -51,7 +51,7 @@ Implemented in this phase:
 - Client-supplied organization ids are not used as trusted tenant context.
 - `ORG_ADMIN` is required for staff invitation.
 - Tenant and owner portal roles are blocked from the staff invitation flow.
-- Package features are resolved by `EntitlementCatalog`. Persistent plan and feature tables belong in Phase 2.
+- Package features are resolved through subscription plan and feature records.
 - HTTP Basic is used for the first security pass because no JWT or session design existed in the project.
 - Hibernate schema update is enabled for local development. Flyway migrations belong before shared database use.
 

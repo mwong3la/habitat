@@ -9,6 +9,12 @@ import com.habitat.habitat.organization.Country;
 import com.habitat.habitat.organization.CountryRepository;
 import com.habitat.habitat.organization.Currency;
 import com.habitat.habitat.organization.CurrencyRepository;
+import com.habitat.habitat.subscription.Feature;
+import com.habitat.habitat.subscription.FeatureRepository;
+import com.habitat.habitat.subscription.Plan;
+import com.habitat.habitat.subscription.PlanFeature;
+import com.habitat.habitat.subscription.PlanFeatureRepository;
+import com.habitat.habitat.subscription.PlanRepository;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.boot.CommandLineRunner;
@@ -22,16 +28,25 @@ public class ReferenceDataSeeder implements CommandLineRunner {
 	private final CountryRepository countryRepository;
 	private final PermissionRepository permissionRepository;
 	private final RoleRepository roleRepository;
+	private final FeatureRepository featureRepository;
+	private final PlanRepository planRepository;
+	private final PlanFeatureRepository planFeatureRepository;
 
 	public ReferenceDataSeeder(
 			CurrencyRepository currencyRepository,
 			CountryRepository countryRepository,
 			PermissionRepository permissionRepository,
-			RoleRepository roleRepository) {
+			RoleRepository roleRepository,
+			FeatureRepository featureRepository,
+			PlanRepository planRepository,
+			PlanFeatureRepository planFeatureRepository) {
 		this.currencyRepository = currencyRepository;
 		this.countryRepository = countryRepository;
 		this.permissionRepository = permissionRepository;
 		this.roleRepository = roleRepository;
+		this.featureRepository = featureRepository;
+		this.planRepository = planRepository;
+		this.planFeatureRepository = planFeatureRepository;
 	}
 
 	@Override
@@ -57,6 +72,25 @@ public class ReferenceDataSeeder implements CommandLineRunner {
 				RoleName.TENANT, Set.of("lease:view", "invoice:view", "maintenance:create"));
 
 		permissionsByRole.forEach(this::role);
+
+		Feature shareableLink = feature("listing:shareable-link", "Shareable listing link");
+		Feature platformPublishing = feature("listing:platform-publishing", "Listing platform publishing");
+		Feature marketplace = feature("listing:marketplace", "Marketplace listing visibility");
+		Feature externalSyndication = feature("listing:external-syndication", "External listing syndication");
+		Feature ownerPortal = feature("owner:portal", "Owner portal access");
+
+		Plan starter = plan("STARTER", "Starter", 1);
+		Plan growth = plan("GROWTH", "Growth", 2);
+		Plan premium = plan("PREMIUM", "Premium", 3);
+
+		planFeature(starter, shareableLink);
+		planFeature(growth, shareableLink);
+		planFeature(growth, platformPublishing);
+		planFeature(premium, shareableLink);
+		planFeature(premium, platformPublishing);
+		planFeature(premium, marketplace);
+		planFeature(premium, externalSyndication);
+		planFeature(premium, ownerPortal);
 	}
 
 	private Currency currency(String code, String name) {
@@ -81,5 +115,21 @@ public class ReferenceDataSeeder implements CommandLineRunner {
 	private Permission permission(String code) {
 		return permissionRepository.findByCode(code)
 				.orElseGet(() -> permissionRepository.save(new Permission(code)));
+	}
+
+	private Feature feature(String code, String name) {
+		return featureRepository.findByCode(code)
+				.orElseGet(() -> featureRepository.save(new Feature(code, name)));
+	}
+
+	private Plan plan(String code, String name, int displayOrder) {
+		return planRepository.findByCode(code)
+				.orElseGet(() -> planRepository.save(new Plan(code, name, displayOrder)));
+	}
+
+	private void planFeature(Plan plan, Feature feature) {
+		if (!planFeatureRepository.existsByPlanAndFeature(plan, feature)) {
+			planFeatureRepository.save(new PlanFeature(plan, feature));
+		}
 	}
 }

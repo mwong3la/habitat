@@ -14,6 +14,10 @@ public record OrganizationResponse(
 		OrganizationStatus status) {
 
 	public static OrganizationResponse from(Organization organization) {
+		return from(organization, Set.of());
+	}
+
+	public static OrganizationResponse from(Organization organization, Set<String> enabledFeatures) {
 		return new OrganizationResponse(
 				organization.getId(),
 				organization.getName(),
@@ -21,7 +25,7 @@ public record OrganizationResponse(
 				organization.getCountry().getCode(),
 				organization.getBaseCurrency().getCode(),
 				organization.getPackageCode(),
-				organization.getEnabledFeatures(),
+				enabledFeatures,
 				organization.getStatus());
 	}
 }

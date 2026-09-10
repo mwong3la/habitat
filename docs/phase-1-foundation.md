@@ -2,7 +2,7 @@
 
 ## Baseline
 
-- Spring Boot application package: `com.habitat.habitat`
+- Spring Boot application package: `com.habitat`
 - Existing dependencies: Spring Data JPA, Spring Security, Bean Validation, Spring WebMVC, PostgreSQL runtime, Lombok, and Spring Boot test starters
 - Existing configuration: application name only
 - Existing database setup: PostgreSQL dependency only; no datasource settings, migrations, or schema

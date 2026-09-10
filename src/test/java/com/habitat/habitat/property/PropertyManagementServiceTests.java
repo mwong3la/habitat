@@ -1,12 +1,12 @@
-package com.habitat.habitat.property;
+package com.habitat.property;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.habitat.habitat.common.domain.ResourceNotFoundException;
-import com.habitat.habitat.organization.OrganizationOnboardingService;
-import com.habitat.habitat.organization.OrganizationType;
-import com.habitat.habitat.organization.RegisterOrganizationRequest;
+import com.habitat.common.domain.ResourceNotFoundException;
+import com.habitat.organization.OrganizationOnboardingService;
+import com.habitat.organization.OrganizationType;
+import com.habitat.organization.RegisterOrganizationRequest;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;

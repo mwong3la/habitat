@@ -1,11 +1,11 @@
-package com.habitat.habitat.identity;
+package com.habitat.identity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.habitat.habitat.organization.OrganizationOnboardingService;
-import com.habitat.habitat.organization.OrganizationResponse;
-import com.habitat.habitat.organization.OrganizationType;
-import com.habitat.habitat.organization.RegisterOrganizationRequest;
+import com.habitat.organization.OrganizationOnboardingService;
+import com.habitat.organization.OrganizationResponse;
+import com.habitat.organization.OrganizationType;
+import com.habitat.organization.RegisterOrganizationRequest;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

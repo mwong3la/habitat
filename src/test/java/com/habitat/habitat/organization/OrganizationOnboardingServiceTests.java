@@ -1,11 +1,11 @@
-package com.habitat.habitat.organization;
+package com.habitat.organization;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.habitat.habitat.common.domain.BusinessRuleViolationException;
-import com.habitat.habitat.identity.AppUserRepository;
-import com.habitat.habitat.identity.RoleName;
+import com.habitat.common.domain.BusinessRuleViolationException;
+import com.habitat.identity.AppUserRepository;
+import com.habitat.identity.RoleName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
